@@ -1,30 +1,60 @@
-# React + TypeScript + Vite
+# Frontend Elevator System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Hotel Elevator System is a web application designed to simulate and manage elevator operations in a hotel setting. This system provides functionalities for calling elevators to specific floors, updating elevator statuses, and managing multiple elevator calls simultaneously.
 
-Currently, two official plugins are available:
+## Setup Guide
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow these steps to set up and run the frontend app for the Hotel Elevator System:
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Before starting, make sure you have read the [README](../README.md) located in the root folder.
 
-- Configure the top-level `parserOptions` property like this:
+### Installation
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+1. Navigate to the frontend folder:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Update the Base URL for API Requests:
+
+   - Open the `api-client.ts` file located in the `services` folder.
+   - Change the `baseURL` value to match the URL where your backend server is running.
+
+     ```typescript
+     import axios from "axios";
+
+     export default axios.create({
+       baseURL: "http://localhost:3000", // Change this to your backend server URL
+     });
+     ```
+
+3. Once the Base URL is updated, you can start the frontend app:
+
+```bash
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Components
+
+### 1. ElevatorList Component
+
+- Displays a list of elevators with their current status and destination floor.
+- Allows users to move individual elevators to a specified floor.
+
+### 2. ElevatorForm Component
+
+- Allows users to test the system by making multiple floor calls simultaneously.
+- Input fields accept a comma-separated list of floors.
+
+### 3. ElevatorStatus Component
+
+- Enables users to manually update the status and destination floor of a selected elevator.
+- Provides feedback on the success or failure of the update.
+
+### 4. App Component
+
+- Main component rendering all other components.
+- Fetches elevator data from the backend and manages state.
