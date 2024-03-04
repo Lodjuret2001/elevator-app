@@ -1,96 +1,42 @@
-# Elevator Control System with MySQL Integration
+# Backend Elevator System
 
-This project implements a simple elevator control system using Node.js, Express, and MySQL for database storage.
+The Elevator Control System backend is built using Node.js and Express.js. It connects to a MySQL database to store elevator data and handles various API endpoints for controlling elevators.
 
-## Setup
+## Prerequisites
 
-1. Clone the repository from GitHub:
+Before starting, make sure you have read the [README](../README.md) located in the root folder.
+
+## Setting up MySQL Database
+
+1. Make sure MySQL is installed and running on your system.
+
+2. Navigate to the `src` directory and open the `index.js` file.
+
+3. Remove or comment out the line `database: "elevator_db"` temporarily.
+
+4. Start the server:
+
    ```bash
-   git clone https://github.com/Lodjuret2001/elevator-MySQL.git
+   node index.js
    ```
 
-2. Navigate to the project directory:
+- The server will be running at `http://localhost:3000`.
+
+5. Send a GET request to the `/create-database` endpoint:
+
    ```bash
-   cd elevator-MySQL
+   curl http://localhost:3000/create-database
    ```
 
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+6. Once the database is created, uncomment the line `database: "elevator_db"` in the `index.js` file.
 
-4. Execute database setup endpoints:
-   - **Create Database**: Replace `<database_name>` with your desired database name and run the following command:
-     ```bash
-     curl -X GET http://localhost:3000/createdb
-     ```
-   - **Create Elevators Table**:
-     ```bash
-     curl -X GET http://localhost:3000/createtable
-     ```
-   - **Insert Elevators**:
-     ```bash
-     curl -X GET http://localhost:3000/createelevators
-     ```
+## Endpoints
 
-   *Note: Ensure that you replace `<database_name>` in the database creation step with the desired database name.*
-
-## API Endpoints
-
-### GET Requests
-
-1. **Get All Elevators**
-   ```http
-   GET /
-   ```
-   Returns a list of all elevators.
-
-2. **Get Elevator by ID**
-   ```http
-   GET /elevator/:id
-   ```
-   Returns information about a specific elevator based on the provided ID.
-
-### PUT Requests
-
-3. **Call Elevator to Floor**
-   ```http
-   PUT /elevator/call
-   ```
-   Body:
-   ```json
-   {
-     "floor": 2
-   }
-   ```
-
-4. **Move Elevator to Floor**
-   ```http
-   PUT /elevator/move/:id
-   ```
-   Body:
-   ```json
-   {
-     "floor": 5
-   }
-   ```
-
-   This endpoint moves the elevator with the specified ID to the specified floor. It updates the destination floor of the elevator and calculates the travel time to reach the floor. Once the elevator arrives at the floor, it resets the elevator's status and updates its current floor accordingly.
-
-### Commands
-
-Some commands have been provided in the index.js. Uncomment and use them as needed.
-
-### Elevator Control Functions
-
-Various utility functions have been implemented to control elevators.
-
-## Notes
-
-- Adjust the base URL in the `createAxios` function.
-- Ensure proper setup and dependencies are installed.
-- Use provided API endpoints to interact with the elevator control system.
-
-## Contributions
-
-Contributions and feature suggestions are welcome! Feel free to submit a pull request or open an issue on GitHub.
+- **GET /create-database**: Creates the MySQL database for the Elevator Control System.
+- **GET /create-table**: Creates the necessary tables in the database.
+- **GET /create-elevators**: Inserts sample elevator data into the database.
+- **GET /all-elevators**: Retrieves all elevators from the database.
+- **GET /elevator/:id**: Retrieves a single elevator by ID.
+- **PUT /elevator**: Finds the closest elevator to specified floors.
+- **PUT /elevator/:id**: Updates a single elevator to a specified floor.
+- **PUT /elevator/status/:id**: Updates the status of a single elevator.
