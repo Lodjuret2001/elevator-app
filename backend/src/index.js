@@ -10,7 +10,7 @@ import mysql from "mysql";
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Lodjuret2001",
+  password: "your_password_here",
   database: "elevator_db",
 });
 
