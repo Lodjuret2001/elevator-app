@@ -1,40 +1,9 @@
-import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import elevatorService, { Elevator } from "../services/elevator-service";
 import { isAxiosError } from "axios";
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const FlexBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 50px;
-  padding: 10px;
-  width: 600px;
-  border: 5px solid purple;
-  border-radius: 5px;
-`;
-
-const Input = styled.input`
-  border: 2px solid #a5b4fc;
-  border-radius: 5px;
-
-  &:focus {
-    outline: none;
-    border: 2px solid indigo;
-  }
-`;
-const Button = styled.button`
-  background-color: indigo;
-  color: #fff;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-`;
+import { Input, Button, Container, FlexBox, Img } from "../hooks/useFormCss";
+import loadingSvg from "../assets/loading.svg";
 
 interface Form {
   [key: string]: number;
@@ -68,11 +37,11 @@ const ElevatorList = ({ setRefresh, elevators }: Props) => {
 
     if (hasNumber) {
       try {
+        setIsLoading(true);
         const submissionData = {
           floor: data[`elevator-${id}`],
         };
 
-        setIsLoading(true);
         const response = await elevatorService.updateOne<Elevator>(
           id,
           submissionData.floor
@@ -118,20 +87,22 @@ const ElevatorList = ({ setRefresh, elevators }: Props) => {
               <p>Destination Floor: {e.destinationFloor}</p>
 
               <form
+                style={{ height: "90px" }}
                 key={e.id}
                 onSubmit={handleSubmit((data) => onSubmit(data, e.id))}
-                className="mt-2 h-20 flex flex-col justify-between border-2 border-indigo-300 p-2 w-4/6"
+                className="mt-2 flex flex-col justify-between items-center border-2 border-indigo-300 p-2 w-5/6"
               >
                 <Input
+                  className="w-full"
                   {...register(`elevator-${e.id}`, {
                     required: false,
                     min: {
                       value: 1,
-                      message: "Floors that are valid is between 1-10",
+                      message: "Floor must be atleast 1...",
                     },
                     max: {
                       value: 10,
-                      message: "Floors that are valid is between 1-10",
+                      message: "Floor can be max 10...",
                     },
                   })}
                   placeholder="Floor..."
@@ -150,13 +121,7 @@ const ElevatorList = ({ setRefresh, elevators }: Props) => {
       </Container>
       {isLoading && (
         <div className=" mt-2 flex items-center justify-center">
-          <svg
-            className="h-4 animate-spin"
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M96 256c0-26.5-21.5-48-48-48S0 229.5 0 256s21.5 48 48 48S96 282.5 96 256zM108.9 60.89c-26.5 0-48.01 21.49-48.01 47.99S82.39 156.9 108.9 156.9s47.99-21.51 47.99-48.01S135.4 60.89 108.9 60.89zM108.9 355.1c-26.5 0-48.01 21.51-48.01 48.01S82.39 451.1 108.9 451.1s47.99-21.49 47.99-47.99S135.4 355.1 108.9 355.1zM256 416c-26.5 0-48 21.5-48 48S229.5 512 256 512s48-21.5 48-48S282.5 416 256 416zM464 208C437.5 208 416 229.5 416 256s21.5 48 48 48S512 282.5 512 256S490.5 208 464 208zM403.1 355.1c-26.5 0-47.99 21.51-47.99 48.01S376.6 451.1 403.1 451.1s48.01-21.49 48.01-47.99S429.6 355.1 403.1 355.1zM256 0C229.5 0 208 21.5 208 48S229.5 96 256 96s48-21.5 48-48S282.5 0 256 0z" />
-          </svg>
+          <Img src={loadingSvg} className="animate-spin" />
           <p>Waiting for elevator to arrive...</p>
         </div>
       )}

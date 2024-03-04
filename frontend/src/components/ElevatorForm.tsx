@@ -1,30 +1,12 @@
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
 import elevatorService from "../services/elevator-service";
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-
-const Input = styled.input`
-  border: 2px solid #a5b4fc;
-  border-radius: 5px;
-
-  &:focus {
-    outline: none;
-    border: 2px solid indigo;
-  }
-`;
-
-const Button = styled.button`
-  background-color: indigo;
-  color: #fff;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-  margin-left: 20px;
-  padding: 2px 5px;
-`;
+import { Input, Button, Img } from "../hooks/useFormCss";
+import loadingSvg from "../assets/loading.svg";
 
 interface Form {
-  floor: string;
+  floors: string;
 }
 
 interface Props {
@@ -45,14 +27,13 @@ const ElevatorForm = ({ setRefresh }: Props) => {
 
   const onSubmit = async (data: Form) => {
     setIsLoading(true);
-    const floors = data.floor.split(",").map((str) => parseInt(str));
+    const floorsArray = data.floors.split(",").map((str) => parseInt(str));
     try {
-      const results = await elevatorService.updateAll<string[]>(floors);
+      const results = await elevatorService.updateAll<string[]>(floorsArray);
       setIsLoading(false);
-      const resMessage = results.data.map((res, index) => (
+      const resMessage = results.data.map((res) => (
         <p
           className="text-center"
-          key={index}
           style={{ color: res.includes("arrived") ? "green" : "red" }}
         >
           {res}
@@ -73,7 +54,7 @@ const ElevatorForm = ({ setRefresh }: Props) => {
     const interval = setInterval(() => {
       setMessage("");
       setMessages([]);
-    }, 5000);
+    }, 8000);
     return () => clearInterval(interval);
   }, [message, messages]);
 
@@ -87,7 +68,7 @@ const ElevatorForm = ({ setRefresh }: Props) => {
         className="mt-4 flex justify-center"
       >
         <Input
-          {...register("floor", {
+          {...register("floors", {
             required: true,
             pattern: {
               value: /^(?:[1-9]|10)(?:,(?:[1-9]|10))*$/,
@@ -96,24 +77,18 @@ const ElevatorForm = ({ setRefresh }: Props) => {
             },
           })}
           placeholder="1,2,3,10,5,6"
-          type="type"
+          type="text"
         />
         <Button type="submit">Make multiple floor calls!</Button>
       </form>
-      {errors.floor && (
+      {errors.floors && (
         <p className="text-red-800 text-center text-xs mt-3">
-          {errors.floor.message}
+          {errors.floors.message}
         </p>
       )}
       {isLoading && (
         <div className=" mt-2 flex items-center justify-center">
-          <svg
-            className="h-4 animate-spin"
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M96 256c0-26.5-21.5-48-48-48S0 229.5 0 256s21.5 48 48 48S96 282.5 96 256zM108.9 60.89c-26.5 0-48.01 21.49-48.01 47.99S82.39 156.9 108.9 156.9s47.99-21.51 47.99-48.01S135.4 60.89 108.9 60.89zM108.9 355.1c-26.5 0-48.01 21.51-48.01 48.01S82.39 451.1 108.9 451.1s47.99-21.49 47.99-47.99S135.4 355.1 108.9 355.1zM256 416c-26.5 0-48 21.5-48 48S229.5 512 256 512s48-21.5 48-48S282.5 416 256 416zM464 208C437.5 208 416 229.5 416 256s21.5 48 48 48S512 282.5 512 256S490.5 208 464 208zM403.1 355.1c-26.5 0-47.99 21.51-47.99 48.01S376.6 451.1 403.1 451.1s48.01-21.49 48.01-47.99S429.6 355.1 403.1 355.1zM256 0C229.5 0 208 21.5 208 48S229.5 96 256 96s48-21.5 48-48S282.5 0 256 0z" />
-          </svg>
+          <Img src={loadingSvg} className="animate-spin" />
           <p>Waiting for elevators to arrive...</p>
         </div>
       )}

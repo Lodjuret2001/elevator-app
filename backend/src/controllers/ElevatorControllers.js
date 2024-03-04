@@ -28,7 +28,6 @@ const ElevatorControllers = {
   callAllElevators: async (req, res) => {
     try {
       const floors = req.body;
-      console.log(floors);
       if (!Array.isArray(floors) || floors.length === 0) {
         return "Invalid floors...";
       }

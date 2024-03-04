@@ -9,8 +9,8 @@ function App() {
   return (
     <>
       {error && <p className="text-red-500">{error}</p>}
-      <h1 className="font-bold text-4xl text-blue-400 text-center">
-        Hello World!
+      <h1 className="mt-4 font-bold text-4xl text-blue-400 text-center">
+        Hotel Elevator System!
       </h1>
       <ElevatorList elevators={elevators} setRefresh={setRefresh} />
       <ElevatorForm setRefresh={setRefresh} />
