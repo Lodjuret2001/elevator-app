@@ -10,6 +10,7 @@ import {
   updateElevator,
   getElevators,
 } from "../utils/databaseFunctions.js";
+import { updateElevatorStatus } from "../utils/commands.js";
 
 const ElevatorControllers = {
   getAllElevators: async (req, res) => {
@@ -26,36 +27,43 @@ const ElevatorControllers = {
 
   callAllElevators: async (req, res) => {
     try {
-      const myFloor = parseInt(req.body.floor);
-      if (isNaN(myFloor) || myFloor > 10 || myFloor <= 0)
-        return res.status(400).send(`ERROR! Given floor was not found!`);
-
-      let elevator = await findClosestElevatorTo(myFloor);
-
-      if (elevator.currentFloor === myFloor) {
-        elevator = await resetElevator(elevator, myFloor);
-
-        console.log(
-          `Elevator ${elevator.id} is already at floor ${myFloor}...`
-        );
-        return res.send(
-          `Elevator ${elevator.id} is already at floor ${myFloor}...`
-        );
+      const floors = req.body;
+      console.log(floors);
+      if (!Array.isArray(floors) || floors.length === 0) {
+        return "Invalid floors...";
       }
 
-      elevator = await changeElevatorStatus(elevator);
+      const results = await Promise.all(
+        floors.map(async (floor) => {
+          if (isNaN(floor) || floor > 10 || floor <= 0)
+            return `ERROR! Given floor was not found!`;
 
-      const travelTime = calculateTravelTime(elevator, myFloor);
-      await moveElevator(travelTime);
+          let elevator = await findClosestElevatorTo(floor);
 
-      elevator = await resetElevator(elevator, myFloor);
+          if (elevator.currentFloor === floor) {
+            elevator = await resetElevator(elevator, floor);
 
-      console.log(
-        `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`
+            console.log(
+              `Elevator ${elevator.id} is already at floor ${floor}...`
+            );
+            return `Elevator ${elevator.id} is already at floor ${floor}...`;
+          }
+
+          elevator = await changeElevatorStatus(elevator);
+
+          const travelTime = calculateTravelTime(elevator, floor);
+          await moveElevator(travelTime);
+
+          elevator = await resetElevator(elevator, floor);
+
+          console.log(
+            `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`
+          );
+          return `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`;
+        })
       );
-      res.send(
-        `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`
-      );
+
+      res.send(results);
     } catch (error) {
       console.error(error.message);
     }
@@ -63,7 +71,7 @@ const ElevatorControllers = {
 
   callOneElevator: async (req, res) => {
     try {
-      const toFloor = parseInt(req.body.floor);
+      const toFloor = parseInt(req.body.data);
       if (isNaN(toFloor) || toFloor > 10 || toFloor <= 0)
         return res.status(400).send(`ERROR! Given floor was not found!`);
 
@@ -80,9 +88,9 @@ const ElevatorControllers = {
         console.log(
           `Elevator ${elevator.id} is already at floor ${toFloor}...`
         );
-        return res.send(
-          `Elevator ${elevator.id} is already at floor ${toFloor}...`
-        );
+        return res
+          .status(400)
+          .send(`Elevator ${elevator.id} is already at floor ${toFloor}...`);
       }
 
       elevator = await changeElevatorStatus(elevator);
@@ -95,11 +103,21 @@ const ElevatorControllers = {
       console.log(
         `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`
       );
-      res.send(
-        `Elevator ${elevator.id} have arrived at floor ${elevator.currentFloor}!`
-      );
+      res.send(elevator);
     } catch (error) {
       console.error(error.message);
+    }
+  },
+
+  updateStatus: async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status, destinationFloor } = req.body;
+      const result = await updateElevatorStatus(id, status, destinationFloor);
+      res.send(result);
+    } catch (error) {
+      console.error(error.message);
+      res.status(400).send(error.message);
     }
   },
 };

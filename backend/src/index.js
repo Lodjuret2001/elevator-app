@@ -46,8 +46,8 @@ async function run() {
   // await updateElevatorStatus(2, 'idle', 0);
   // await updateElevatorStatus(3, 'idle', 0);
   // await getElevatorStatus();
-  await isElevatorAvailable(2);
-  await isElevatorAvailable(3);
+  // await isElevatorAvailable(2);
+  // await isElevatorAvailable(3);
   // await callMultipleElevatorToFloors([1, 2, 3, 4, 5, 6]);
   // await callMultipleElevatorToFloors([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
   // await callMultipleElevatorToFloors([8, 8, 8]);

@@ -41,7 +41,7 @@ async function updateElevatorStatus(id, status, destinationFloor) {
   let sql = `UPDATE elevators SET status = '${status}', destinationFloor = ${destinationFloor} WHERE id = ${id}`;
   await updateElevator(sql);
 
-  console.log(`Updated Elevator ${id} statuses successfully...`);
+  return(`Updated Elevator ${id} statuses successfully...`);
 }
 
 async function isElevatorAvailable(id) {
