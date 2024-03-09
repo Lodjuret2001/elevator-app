@@ -57,7 +57,7 @@ const ElevatorStatus = ({ setRefresh, elevators }: Props) => {
 
   return (
     <>
-      <div className="flex justify-center mt-3 flex-col items-center">
+      <div className="flex justify-center mt-3 mb-10 flex-col items-center">
         <h2 className="mb-4">Update Elevator statuses manually</h2>
         <div style={{ width: "650px" }}>
           <form
