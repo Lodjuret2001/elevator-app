@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import elevatorService from "../services/elevator-service";
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-import { Input, Button, Img } from "../hooks/useFormCss";
+import { Input, Button, Img } from "../styles/formCss";
 import loadingSvg from "../assets/loading.svg";
 
 interface Form {
